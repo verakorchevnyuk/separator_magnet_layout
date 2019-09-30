@@ -1,0 +1,37 @@
+clear; close all; clc;
+
+beta = linspace(-45,89,50) ;
+Bgrad = linspace(0,10,50) ;
+
+for i = 1:length(beta)
+    for j = 1:length(Bgrad)
+        [alpha1(i,j), alpha2(i,j), total_alpha(i,j)] = dipersion_with_magnet_cut_and_gradient( beta(i), Bgrad(j), 'n' ) ;
+        if total_alpha(i,j) <= 0
+            disp('total angle <= 0')
+            total_alpha(i,j) = 0 ;
+        end
+%         if alpha1(i,j) >= 90
+%             total_alpha(i,j) = 0 ;
+%         end
+    end
+end
+
+%% Plotting
+
+figure
+meshc(beta,Bgrad,total_alpha') ;
+colorbar
+hold on
+
+% highlight angle of interest
+hili_angle = 60 ;
+idx = abs(total_alpha - hili_angle) < hili_angle * 0.05 ;
+
+zz = zeros(size(total_alpha(:))) ;
+zz(idx) = total_alpha(idx) ;
+% plot3(beta,Bgrad,zz)
+scatter3(beta(idx),Bgrad(idx),total_alpha(idx)') ;
+
+xlabel('\beta [degrees]')
+ylabel('B_{grad} [T/m]')
+zlabel('\alpha [degrees]')

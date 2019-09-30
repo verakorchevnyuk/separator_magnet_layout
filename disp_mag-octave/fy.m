@@ -1,0 +1,1 @@
+   function y = fy(m,b,x)       % functions of the magnet limit    y = m.*x + b ;   end

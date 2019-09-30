@@ -1,0 +1,24 @@
+# Beamline three-dimensional footprint, in 10 columns per element
+# 1. 'x' coordinate (center) [m]
+# 2. 'y' coordinate (center) [m]
+# 3. 'z' coordinate (center) [m]
+# 4. 's' position along the beam line (taken at element exit) [m]
+# 5. element name
+# 6. element type
+# 7. element length [m]
+# 8. euler angle alpha (aka phi) [rad]
+# 9. euler angle beta (aka theta) [rad]
+# 10. euler angle gamma (aka psi) [rad]
+0.401974 -0.402554 0 0 "[BEGIN]" MARKER 0 -1.571 0 0
+0.401853 -0.998387 0 1.19167 "" 5DRIFT 1.19167 -1.571 0 0
+0.401711 -1.69422 0 1.39167 "" 10QUADRUPOLE 0.2 -1.571 0 0
+0.401508 -2.68897 0 3.18116 "" 5DRIFT 1.7895 -1.571 0 0
+0.401306 -3.68372 0 3.38116 "" 10QUADRUPOLE 0.2 -1.571 0 0
+0.401245 -3.98372 0 3.78116 "" 5DRIFT 0.4 -1.571 0 0
+0.401184 -4.28372 0 3.98116 "" 10QUADRUPOLE 0.2 -1.571 0 0
+0.401133 -4.53372 0 4.28116 "" 5DRIFT 0.3 -1.571 0 0
+0.401082 -4.78372 0 4.48116 "" 10QUADRUPOLE 0.2 -1.571 0 0
+0.401031 -5.03372 0 4.78116 "" 5DRIFT 0.3 -1.571 0 0
+0.40098 -5.28372 0 4.98116 "" 10QUADRUPOLE 0.2 -1.571 0 0
+0.400837 -5.98372 0 6.18116 "" 5DRIFT 1.2 -1.571 0 0
+0.400715 -6.58372 0 6.18116 "[END]" MARKER 0 -1.571 0 0
