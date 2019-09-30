@@ -5,9 +5,9 @@ set outdir Results
 exec mkdir -p $outdir
 cd $outdir
 
-set EL 100
+set EL 105
 set EO 120
-set ER 140
+set ER 135
 
 Octave {
     addpath([ pwd '/../disp_mag-octave' ]);
