@@ -58,8 +58,8 @@ Octave {
     Bref = 1; #constrain(X(10), 1, 1) % T
     Bgrad = constrain(X(11), 0, 1.5) # % T/m 43028
 
-    %[lm, R, Bgrad, Gamma, P0, P1, P2 ] = beam_dynamics_variables( beta1, beta2, Bref, Bgrad, $EO * 1e6, $EL * 1e6, $ER * 1e6, 'n');
-    [lm, R, Bgrad, Gamma, P0, P1, P2 ] = beam_dynamics_variables( beta1, beta2, Bref, Bgrad, 120 * 1e6, 105 * 1e6, 135 * 1e6, 'n');
+    [lm, R, Bgrad, Gamma, P0, P1, P2 ] = beam_dynamics_variables( beta1, beta2, Bref, Bgrad, $EO * 1e6, $EL * 1e6, $ER * 1e6, 'n');
+    %[lm, R, Bgrad, Gamma, P0, P1, P2 ] = beam_dynamics_variables( beta1, beta2, Bref, Bgrad, 120 * 1e6, 105 * 1e6, 135 * 1e6, 'n');
 
 
 	magnetic_lengths = lm'
