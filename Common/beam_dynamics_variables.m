@@ -72,12 +72,12 @@ if (char(plot_info) == 'y')
         xx_cut2 = linspace(0,P0(size(P0,1),1)*1.5,100) ;
         yy_cut2 = fy(m2,b2,xx_cut2) ;
         
-        figure
+        h = figure ;
         plot(xx_cut1',yy_cut1','.'); % Cutting line
         grid on;
         daspect([1 1 1])
         hold on;
-        plot(xx_cut2',yy_cut2','.'); % Cutting line
+        plot(xx_cut2',yy_cut2','-.'); % Cutting line
         
         plot(P0(:,1),P0(:,2)); % Reference beam
         
@@ -85,9 +85,21 @@ if (char(plot_info) == 'y')
         
         plot(P2(:,1),P2(:,2)); % High energy beam
         
-        title({['\beta = ', num2str(beta,'%.1f'), ' degrees | dB/dr = ', num2str(Bgrad), ' T/m'],... 
-            ['\theta_1 = ' num2str(alpha1,'%.1f') ' degrees; ' '\theta_2 = ' num2str(alpha2,'%.1f') ' degrees; ' '\alpha = ' num2str(total_alpha,'%.1f') ' degrees' ]}, "fontsize", 15);
+        title({['\beta_1 = ', num2str(beta1,'%.1f'), ' degrees;  \beta_2 = ', num2str(beta2,'%.1f'), ' degrees' ],...
+            [ 'B_{ref} = ', num2str(Bref), ' T;  dB/dr = ', num2str(Bgrad), ' T/m;  \alpha = ' num2str(total_alpha,'%.1f') ' degrees' ], ...
+            [ 'H1 = ', num2str(P1(end,2), '%.3f'), ' m;  H0 = ', num2str(P0(end,2), '%.3f'), ' m;  H2 = ', num2str(P2(end,2), '%.3f'), ' m' ] }, "fontsize", 15);
+          %  ['\theta_1 = ' num2str(alpha1,'%.1f') ' degrees; ' '\theta_2 = ' num2str(alpha2,'%.1f') ' degrees; ' '\alpha = ' num2str(total_alpha,'%.1f') ' degrees' ]}, "fontsize", 15);
 end
+
+xlabel('[m]')
+ylabel('[m]')
+axis([0 0.5 -0.7 0])
+set(h, 'Position', get(0, 'Screensize'));
+
+pic_location = 'C:\Users\vkorchev\Downloads\separator_magnet_layout-master\separator_magnet_layout-master\Common\schematics' ;
+pic_name = ['beta1-', num2str(beta1,'%.0f'), '_beta2-',num2str(beta2,'%.0f'), '_Bref-', num2str(Bref,'%.0f'), '_gradB-', num2str(Bgrad,'%.0f'), '_', datestr(now,'mm-dd-yyyy_HH-MM') ];
+saveas(h, [pic_location '\' pic_name], 'png' ) ;
+close (h)
 
 end
 
