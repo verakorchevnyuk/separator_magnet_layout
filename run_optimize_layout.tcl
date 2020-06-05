@@ -21,13 +21,18 @@ Octave {
 	
     # MERIT FUNCTION
     function M = merit_function(X)
-    H = 6; # m, target height
+
+    # IMPORTANT QUANTITIES
+    H = 8; # m, target height
+    Lmin = 1.2; # m, minimum length of the shortest possible drift
     ALd = 60; # target angle for L beamline
     ARd = 30; # target angle for R beamline
+    # IMPORTANT QUANTITIES
+
     global B100 B120 B140 D100 D120 D140
-    DL100 = constrain(X(1:2), 1.2, 10); % m
-    DL120 = constrain(X(3),   1.2, 10); % m
-    DL140 = constrain(X(4:5), 1.2, 10); % m
+    DL100 = constrain(X(1:2), Lmin, 10); % m
+    DL120 = constrain(X(3),   Lmin, 10); % m
+    DL140 = constrain(X(4:5), Lmin, 10); % m
 
     lm = [ 0.99998694425935408  ; 0.99999093345924772 ; 0.99999333884400476 ] ;
 
@@ -55,7 +60,7 @@ Octave {
     Tcl_Eval(sprintf("BeamlineSaveFootprint -beamline 140 -x0 %g -y0 %d -zangle %g -file footprint_140MeV.dat", P2(end,1), P2(end,2), deg2rad(AR)));
     
     FL = dlmread('footprint_100MeV.dat')(12:end,1:2);
-    FO = dlmread('footprint_120MeV.dat')(12:end,1:2)
+    FO = dlmread('footprint_120MeV.dat')(12:end,1:2);
     FR = dlmread('footprint_140MeV.dat')(12:end,1:2);
 
     clf
