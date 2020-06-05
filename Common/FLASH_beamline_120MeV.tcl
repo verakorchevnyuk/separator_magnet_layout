@@ -12,17 +12,4 @@ set lbend 0.8
 
 BeamlineNew
 Girder
-Drift -length 1.1
-
-Quadrupole -length $lquad -strength [expr -22.24163335 * $lquad * $e0]
-Drift -length 1.1
-Quadrupole -length $lquad -strength [expr -22.24163335 * $lquad * $e0]
-Drift -length 0.4
-
-Quadrupole -length $lquad -strength [expr 23.39833159 * $lquad * $e0]
-Drift -length 0.3
-Quadrupole -length $lquad -strength [expr -27.15654042 * $lquad * $e0]
-Drift -length 0.3
-Quadrupole -length $lquad -strength [expr 24.999998 * $lquad * $e0]
-Drift -length 1.2
-
+Drift -length 5
