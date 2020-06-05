@@ -5,113 +5,58 @@ set outdir Results
 exec mkdir -p $outdir
 cd $outdir
 
-set EL 100
-set EO 120
-set ER 140
-
-Octave {
-    addpath([ pwd '/../disp_mag-octave' ]);
-    global B${EL} B${ER} D${EL} D${EO} D${ER} P0 P1 P2
-}
-
 # CREATE BEAMLINES
-foreach energy "${EL} ${EO} ${ER}" {
+foreach energy "100 120 140" {
     source $scripts/FLASH_beamline_${energy}MeV.tcl
     BeamlineSet -name ${energy}
     Octave {
-	B${energy} = placet_get_number_list("${energy}", "sbend");;
+	global B${energy} D${energy}
+	B${energy} = placet_get_number_list("${energy}", "sbend");
 	D${energy} = placet_get_number_list("${energy}", "drift");
     }
 }
 
 Octave {
     addpath('$scripts');
-    
-    # GET INITIAL DRIFT LENGTHS
-    DL${EL} = placet_element_get_attribute("${EL}", D${EL}, "length");
-    DL${EO} = placet_element_get_attribute("${EO}", D${EO}, "length");
-    DL${ER} = placet_element_get_attribute("${ER}", D${ER}, "length");
-
-    # DEGREES OF FREEDOM:
-    # B${EL}
-    # B${ER}
-    D${EL} = D${EL}(DL${EL} > 0.4)(1:end-1); # all but the last drift of beamline, longer than 0.4 m
-    D${EO} = D${EO}(DL${EO} > 0.4)(1:end-1);
-    D${ER} = D${ER}(DL${ER} > 0.4)(1:end-1);
-}
-
-Octave {
 	
     # MERIT FUNCTION
     function M = merit_function(X)
     H = 6; # m, target height
     ALd = 60; # target angle for L beamline
     ARd = 30; # target angle for R beamline
-    global B${EL} B${ER} D${EL} D${EO} D${ER} P0 P1 P2
-    DL${EL} = constrain(X(1:2), 0, 2); % m
-    DL${EO} = constrain(X(3:4), 0, 2); % m
-    DL${ER} = constrain(X(5:6), 0, 2); % m
-    BAL = 0; #constrain(X(7), 0, 0) % deg
-    BAR = 0; #constrain(X(8), 0, 0) % deg
-    #beta1 = constrain(X(9), 35, 45) % deg
-    #beta2 = constrain(X(10), 0, 90) % deg
-    #Bref = 1; #constrain(X(10), 1, 1) % T
-    #Bgrad = constrain(X(11), 0, 1.5) # % T/m 43028
+    global B100 B120 B140 D100 D120 D140
+    DL100 = constrain(X(1:2), 1.2, 10); % m
+    DL120 = constrain(X(3),   1.2, 10); % m
+    DL140 = constrain(X(4:5), 1.2, 10); % m
 
-    %[lm, R, Bgrad, Gamma, P0, P1, P2 ] = beam_dynamics_variables( beta1, beta2, Bref, Bgrad, $EO * 1e6, $EL * 1e6, $ER * 1e6, 'n');
-    %[ lm, R, Bgrad, Gamma, P0, P1, P2, theta1, theta2 ] = beam_dynamics_variables( beta1, beta2, Bref, Bgrad, 120 * 1e6, 105 * 1e6, 135 * 1e6, 'n');
-	
-	lm = [ 0.99998694425935408  ; 0.99999093345924772 ; 0.99999333884400476 ] ;
-	#R, Bgrad, Gamma, P0, P1, P2
+    lm = [ 0.99998694425935408  ; 0.99999093345924772 ; 0.99999333884400476 ] ;
 
-	#theta1 = 115.87 ;
-	#theta2 = 71.529 ;
-	#theta0 = 90.059 ;
-	#alpha1 = theta1 - theta0 ;
-	#alpha2 = theta0 - theta2 ;
-	#gamma0 = beta ;
-	#gamma1 = alpha1 + beta1 ;
-	#gamma2 = beta2 - alpha2 ;
-	#total_alpha = alpha1 + alpha2 ;
-
-	#magnetic_lengths = lm' ;
-    
-    #VO = diff(P0,1,1)(end,:);
-    #VL = diff(P1,1,1)(end,:);
-    #VR = diff(P2,1,1)(end,:);
-    
-    # SET THE MAIN BENDING ANGLES AND LENGTHS
-
-    #AO = atan2d(VO(2), VO(1));
-    #AL = atan2d(VL(2), VL(1));
-    #AR = atan2d(VR(2), VR(1));
-    
-	AO = -90.058697687489115 ;
+    AO = -90.058697687489115 ;
     AL = -115.86546804164304 ;
-	AR = -71.528778310901089 ;
-	
-	P0 = [ 524.66980412173018, -677.60953638218894 ]/1000 ; 
-	P1 = [ 320.59393079582719, -699.89468503429543 ]/1000 ;
-	P2 = [ 666.38034744499737, -617.39155831973233 ]/1000 ;
+    AR = -71.528778310901089 ;
+    
+    P0 = [ 524.66980412173018, -677.60953638218894 ]/1000 ; 
+    P1 = [ 320.59393079582719, -699.89468503429543 ]/1000 ;
+    P2 = [ 666.38034744499737, -617.39155831973233 ]/1000 ;
 
-    BAL(2) = (-AO - ALd) + (AL - BAL(1));
-    BAR(2) = (-AO + ARd) + (AR - BAR(1));
+    BAL = (-AO - ALd) + (AL);
+    BAR = (-AO + ARd) + (AR);
+    
+    placet_element_set_attribute("100", D100, "length", DL100);
+    placet_element_set_attribute("120", D120, "length", DL120);
+    placet_element_set_attribute("140", D140, "length", DL140);
 
-
-    placet_element_set_attribute("${EL}", D${EL}, "length", DL${EL});
-    placet_element_set_attribute("${EO}", D${EO}, "length", DL${EO});
-    placet_element_set_attribute("${ER}", D${ER}, "length", DL${ER});
-    placet_element_set_attribute("${EL}", B${EL}, "angle", deg2rad(BAL));
-    placet_element_set_attribute("${ER}", B${ER}, "angle", deg2rad(BAR));
+    placet_element_set_attribute("100", B100, "angle", deg2rad(BAL));
+    placet_element_set_attribute("140", B140, "angle", deg2rad(BAR));
 
     # 
-    Tcl_Eval(sprintf("BeamlineSaveFootprint -beamline ${EL} -x0 %g -y0 %d -zangle %g -file footprint_${EL}MeV.dat", P1(end,1), P1(end,2), deg2rad(AL)));
-    Tcl_Eval(sprintf("BeamlineSaveFootprint -beamline ${EO} -x0 %g -y0 %d -zangle %g -file footprint_${EO}MeV.dat", P0(end,1), P0(end,2), deg2rad(AO)));
-    Tcl_Eval(sprintf("BeamlineSaveFootprint -beamline ${ER} -x0 %g -y0 %d -zangle %g -file footprint_${ER}MeV.dat", P2(end,1), P2(end,2), deg2rad(AR)));
+    Tcl_Eval(sprintf("BeamlineSaveFootprint -beamline 100 -x0 %g -y0 %d -zangle %g -file footprint_100MeV.dat", P1(end,1), P1(end,2), deg2rad(AL)));
+    Tcl_Eval(sprintf("BeamlineSaveFootprint -beamline 120 -x0 %g -y0 %d -zangle %g -file footprint_120MeV.dat", P0(end,1), P0(end,2), deg2rad(AO)));
+    Tcl_Eval(sprintf("BeamlineSaveFootprint -beamline 140 -x0 %g -y0 %d -zangle %g -file footprint_140MeV.dat", P2(end,1), P2(end,2), deg2rad(AR)));
     
-    FL = dlmread('footprint_${EL}MeV.dat')(12:end,1:2);
-    FO = dlmread('footprint_${EO}MeV.dat')(12:end,1:2);
-    FR = dlmread('footprint_${ER}MeV.dat')(12:end,1:2);
+    FL = dlmread('footprint_100MeV.dat')(12:end,1:2);
+    FO = dlmread('footprint_120MeV.dat')(12:end,1:2)
+    FR = dlmread('footprint_140MeV.dat')(12:end,1:2);
 
     clf
     hold on
@@ -128,16 +73,16 @@ Octave {
     drawnow
     
     M = hypot(FL(end,1) - FO(end,1), FL(end,2) - FO(end,2)) + ...
-        hypot(FR(end,1) - FO(end,1), FR(end,2) - FO(end,2)) % + ...
-        %0.1 * abs(FO(end,2));
+        hypot(FR(end,1) - FO(end,1), FR(end,2) - FO(end,2)) + ...
+        abs(abs(FO(end,2)) - H)
     end
 
-    X = fminsearch(@merit_function, zeros(1,6))
+    X = fminsearch(@merit_function, zeros(5,1));
 
     print -dpng plot_layout.png
 }
 
-foreach energy "${EL} ${EO} ${ER}" {
+foreach energy "100 120 140" {
     BeamlineUse -name "${energy}"
     BeamlineList -file FLASH_beamline_${energy}MeV_flat.tcl
 }
